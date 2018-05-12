@@ -1,4 +1,5 @@
 #pragma once
+#include<vector>
 // FILE : Node.h
 // INFO : Class for all the elements in the quad tree structure
 // Forward declaration
@@ -12,13 +13,11 @@ public:
 	// Constructor and Destructor methods
 	//----------------------------------------------
 	// Register the QuadTree root node with _siblingId = 0
-	Node(int _siblingId);
+	Node(int _siblingId,std::vector<Node*>& _resMan);
 	// Register the subsequent childrens of the QuadTree root
-	Node(Node* _parent,int _siblingId);
+	Node(Node* _parent,int _siblingId,std::vector<Node*>& _resMan);
 
 	virtual ~Node();
-
-	void delAllChild();
 
 	//----------------------------------------------
 	// Abstract method deabstraction
@@ -74,9 +73,17 @@ private:
 	void setParent(Elem* _parent);
 
 	//----------------------------------------------
+	// Resource management
+	//----------------------------------------------
+	// register to resource manager
+	void registerToResMan();
+
+	//----------------------------------------------
 	// Data members
 	//----------------------------------------------
 
+	// resource manager
+	std::vector<Node*>& m_resMan;
 	// The identity of the current node amongst its siblings
 	// // That is whether it is child 1,2,3 or 4.
 	// // If it is 0 then that particular node is the QuadTree root
