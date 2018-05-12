@@ -2,6 +2,7 @@
 #include<vector>
 #include "mods/Elem.h"
 #include "mods/Node.h"
+#include "mods/Point.h"
 
 int main(int argc,char **argv)
 {
@@ -9,10 +10,21 @@ int main(int argc,char **argv)
 	Node* n = new Node(0,resMan);
 	Node* t;
 	n->subdivide();
-	n->getChild1()->subdivide();
-	n->getChild4()->subdivide();
 
 	std::cout<<resMan.size()<<std::endl;
+
+	std::vector<Point*> geom;
+	geom.push_back(new Point(0.5f,0.5f));
+	geom.push_back(new Point(0.0f,7.8f));
+
+	n->rayBoxIntersectionTest2D(geom);
+
+
+
+
+
+
+
 
 	for(int i = resMan.size()-1;i>=0;i--)
 	{

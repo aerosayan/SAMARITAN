@@ -4,7 +4,7 @@
 // INFO : Class for all the elements in the quad tree structure
 // Forward declaration
 class Elem;
-
+class Point;
 // A node in the quad tree. It can be either a parent node(branch) or a leaf node.
 class Node : public Elem
 {
@@ -42,6 +42,14 @@ public:
 
 	unsigned int getMeshLevel(){return m_meshLevel;}
 
+	// get child1 node positon
+	Point* getPos(){return m_pos;}
+	// get bounding box lengths
+	double getBoxLength(){return m_boxLength;}
+	double getBoxHeight(){return m_boxHeight;}
+	// get bounding box
+	std::vector<Point*>& getBoundingBox(){return m_boundingBox;}
+
 	//----------------------------------------------
 	// Set methods
 	//----------------------------------------------
@@ -50,6 +58,9 @@ public:
 	void setChild3(Node* _child);
 	void setChild4(Node* _child);
 
+	void setPos(Point* _point){m_pos = _point;}
+
+	void setBoundingBox();
 	//----------------------------------------------
 	// Flag queries
 	//----------------------------------------------
@@ -59,11 +70,14 @@ public:
 
 
 	//----------------------------------------------
-	// Mesh generation and traversal methods
+	// mesh generation,ray intersection et.al methods
 	//----------------------------------------------
 
 	// subdivide the node to create 4 children
 	void subdivide();
+
+	// run an intersection test in 2d for the bounding boxes and geometry edges
+	bool rayBoxIntersectionTest2D(std::vector<Point*>& _geometry);
 
 
 private:
@@ -71,7 +85,7 @@ private:
 	// Set methods
 	//----------------------------------------------
 	void setParent(Elem* _parent);
-
+	void setIsCut(){m_isCut = true;}
 	//----------------------------------------------
 	// Resource management
 	//----------------------------------------------
@@ -105,4 +119,13 @@ private:
 
 	// mesh subdivision level
 	unsigned int m_meshLevel = -1;
+
+	// node child1 position
+	Point* m_pos;
+	// node bounding box
+	std::vector<Point*> m_boundingBox;
+
+	// boudning box length and width
+	double m_boxLength;
+	double m_boxHeight;
 };
