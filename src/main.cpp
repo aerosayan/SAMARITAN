@@ -3,6 +3,7 @@
 #include "mods/Elem.h"
 #include "mods/Node.h"
 #include "mods/Point.h"
+#include "mods/Manager.h"
 
 int main(int argc,char **argv)
 {
@@ -15,9 +16,10 @@ int main(int argc,char **argv)
 
 	std::vector<Point*> geom;
 	geom.push_back(new Point(0.5f,0.5f));
-	geom.push_back(new Point(0.0f,7.8f));
+	geom.push_back(new Point(1.0f,1.0f));
 
-	n->rayBoxIntersectionTest2D(geom);
+	n->runIntersectionTests(geom);
+
 
 
 

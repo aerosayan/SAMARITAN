@@ -1,7 +1,8 @@
+#include "Point.h"
 #include "Elem.h"
 #include "Node.h"
-#include "Point.h"
 #include<iostream>
+#include <cmath>
 
 Node::Node(int _siblingId,std::vector<Node*>& _resMan):
 m_siblingId(_siblingId),m_meshLevel(0),m_resMan(_resMan),m_boxLength(10.0f),
@@ -97,7 +98,26 @@ void Node::subdivide()
 	getChild4()->setBoundingBox();
 }
 
-bool Node::rayBoxIntersectionTest2D(std::vector<Point*>& _geometry)
+
+bool Node::runIntersectionTests(std::vector<Point*>& _geometry)
+{
+	std::cout<<"INF: running intersection test 1 of 3 ..."<<std::endl;
+	if(rayBoxIntersectionTest2D(_geometry, 1,1,1e-3,1e-3) >= 1){
+		return true;
+	}
+	std::cout<<"INF: running intersection test 2 of 3 ..."<<std::endl;
+	if((rayBoxIntersectionTest2D(_geometry,1,101,1e-3,1e-3) % 2) == 0 ){
+		return true;
+	}
+	std::cout<<"INF: running intersection test 3 of 3 ..."<<std::endl;
+	if((rayBoxIntersectionTest2D(_geometry,101,1,1e-3,1e-3) % 2) == 0 ){
+		return true;
+	}
+	std::cout<<"INF:  intersection test 3 of 3 have failed ..."<<std::endl;
+	return false;
+}
+
+int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _geometry, int _s1,int _s2,double _xtol,double _ytol)
 {
 	// Point placeholders
 	Point *p1,*p2,*p3,*p4;
@@ -107,34 +127,133 @@ bool Node::rayBoxIntersectionTest2D(std::vector<Point*>& _geometry)
 	double rs;
 	// the intercepts
 	double u,t;
+	// coordinates
+	double x1,y1,x2,y2,x3,y3,x4,y4;
+	// line segment external division factors
+	double m,n;
+	// number of intersection
+	int intersectionCount = 0;
+
+	// hit domain edges flags
+	std::vector<bool> hitDomainEdges(getBoundingBox().size()-1,false);
+
 	// run loop to go over all the defined geometry edges
 	for (int i = 0;i<_geometry.size()-1;i++)
 	{
 		// select the geometry edge points
 		p1 = _geometry.at(i);
 		p2 = _geometry.at(i+1);
-		rx = p2->getX() - p1->getX();
-		ry = p2->getY() - p1->getY();
+		x1 = p1->getX(); y1 = p1->getY();
+		x2 = p2->getX(); y2 = p2->getY();
+
+		// vector scaling operation
+		// first check based on the x co-ordinates
+		// NOTE : a preferential treatment is given to the x component
+		// // for my case it is okay to give preferential treatment to the
+		// // x component however in somebody else's case it may not be.
+		// // So is there something that can be done for this?
+		// considering x1 is of left point and x2 is of right point
+		// TODO : it is not correct . correct it
+		std::cout<<"INF: vector scaling requested is ..."<<std::endl;
+		std::cout<<"s1 : "<<_s1<<" | s2 : "<<_s2<<std::endl;
+		std::cout<<"xtol : "<<_xtol<<" | ytol : "<<_ytol<<std::endl;
+
+		if(_s1 == 1 && _s2 == 1 ){
+			// do nothing
+		}else if(_s1 == 1 && _s2 > 1){
+			// first run tol check then write equations based on which is left and right
+			if((double)fabs(x2-x1) > _xtol){
+				// set the values of m and n
+				m = _s2;
+				n = m-1;
+				if(x2>x1){
+					// change x2 and y2
+					x2 = (double)(m*x2 - n*x1)/(double)(m-n);
+					y2 = (double)(m*y2 - n*y1)/(double)(m-n);
+				}else{ //x1>x2
+					// change x1 and y1
+					x1 = (double)(m*x1 - n*x2)/(double)(m-n);
+					y1 = (double)(m*y1 - n*y2)/(double)(m-n);
+				}
+			}
+			else{ //abs(x2-x1) < _xtol i.e  x1 == x2 boss
+				if((double)fabs(y2-y1) > _ytol){
+					// set the values of m and n
+					m = _s2;
+					n = m-1;
+					// TODO : We are writing extra code. need to refactor
+					if(y2>y1){
+						// change x2 and y2
+						x2 = (double)(m*x2 - n*x1)/(double)(m-n);
+						y2 = (double)(m*y2 - n*y1)/(double)(m-n);
+					}else{
+						// change x1 and y1
+						x1 = (double)(m*x1 - n*x2)/(double)(m-n);
+						y1 = (double)(m*y1 - n*y2)/(double)(m-n);
+					}
+				}
+			}
+		}else if(_s1 >1 && _s2 == 1){
+			// first run tol check then write equations based on which is left and right
+			if((double)fabs(x2-x1) > _xtol){
+				// set the values of m and n
+				m = _s1;
+				n = m-1;
+				if(x1<x2){
+					// change x1 and y1
+					x1 = (double)(m*x1 - n*x2)/(double)(m-n);
+					y1 = (double)(m*y1 - n*y2)/(double)(m-n);
+				}else{ //x1>x2
+					// change x2 and y2
+					x2 = (double)(m*x2 - n*x1)/(double)(m-n);
+					y2 = (double)(m*y2 - n*y1)/(double)(m-n);
+				}
+			}
+			else{ //abs(x2-x1) < _xtol i.e  x1 == x2 boss
+				if((double)fabs(y2-y1) > _ytol){
+					// set the values of m and n
+					m = _s1;
+					n = m-1;
+					// TODO : We are writing extra code. need to refactor
+					if(y1<y2){
+						// change x1 and y1
+						x1 = (double)(m*x1 - n*x2)/(double)(m-n);
+						y1 = (double)(m*y1 - n*y2)/(double)(m-n);
+					}else{
+						// change x2 and y2
+						x2 = (double)(m*x2 - n*x1)/(double)(m-n);
+						y2 = (double)(m*y2 - n*y1)/(double)(m-n);
+					}
+				}
+			}
+		}else{
+			std::cerr<<"ERR: we have an error unexpected scaling factors are given ...."<<std::endl;
+			std::cerr<<"s1 : "<<_s1<<" | s2 : "<<_s2<<std::endl;
+		}
+
+		rx = x2 - x1;
+		ry = y2 - y1;
 		// run loop to go over the bounding box vectors
 		for(int j = 0;j<m_boundingBox.size()-1;j++)
 		{
 			// select the bounding box side points
 			p3 = m_boundingBox.at(j);
 			p4 = m_boundingBox.at(j+1);
+			x3 = p3->getX(); y3 = p3->getY();
+			x4 = p4->getX(); y4 = p4->getY();
+
 			std::cout<<"-----------------------------"<<std::endl;
-			std::cout<<"p1.x : "<<p1->getX()<<"\t| p1.y : "<<p1->getY()<<std::endl;
-			std::cout<<"p2.x : "<<p2->getX()<<"\t| p2.y : "<<p2->getY()<<std::endl;
-			std::cout<<"p3.x : "<<p3->getX()<<"\t| p3.y : "<<p3->getY()<<std::endl;
-			std::cout<<"p4.x : "<<p4->getX()<<"\t| p4.y : "<<p4->getY()<<std::endl;
-			sx = p4->getX() - p3->getX();
-			sy = p4->getY() - p3->getY();
+			std::cout<<"p1.x : "<<x1<<"\t| p1.y : "<<y1<<std::endl;
+			std::cout<<"p2.x : "<<x2<<"\t| p2.y : "<<y2<<std::endl;
+			std::cout<<"p3.x : "<<x3<<"\t| p3.y : "<<y3<<std::endl;
+			std::cout<<"p4.x : "<<x4<<"\t| p4.y : "<<y4<<std::endl;
+			sx = x4 - x3;
+			sy = y4 - y3;
 			// calculate r*s cross product
 			rs = ( rx*sy - ry*sx); // dont care about direction
 			// finaly calculate intercepts
-			u = (float)((p3->getX()-p1->getX())*ry - \
-			 	(p3->getY()-p1->getY())*rx)/(float)rs;
-			t = (float)((p3->getX()-p1->getX())*sy - \
-				(p3->getY()-p1->getY())*sx)/(float)rs;
+			u = (float)((x3-x1)*ry - (y3-y1)*rx)/(float)rs;
+			t = (float)((x3-x1)*sy - (y3-y1)*sx)/(float)rs;
 
 			std::cout<<"u : "<<u<<"\t\t| t : "<<t<<std::endl;
 			//std::cout<<"rs : "<<rs<<" | rx : "<<rx<<" | ry : "<<ry<<std::endl;
@@ -143,17 +262,45 @@ bool Node::rayBoxIntersectionTest2D(std::vector<Point*>& _geometry)
 			// intercept test
 			if(u>=0 && u<=1 && t>=0 && t<=1){
 				std::cout<<"-------------------------------\n";
-				std::cout<<"INF: ray intersection test has succedded ...\n";
+				std::cout<<"INF: ray intersection test has succedded\n";
 				std::cout<<"-------------------------------"<<std::endl;
-				break;
+				// mark in hit domian edges flag vector
+				hitDomainEdges.at(j) = true;
+				intersectionCount += 1;
 			}
 			else{
 				std::cout<<"INF: ray intersection tes has failed ..."<<std::endl;
 			}
 		}
 	}
+	if(intersectionCount == 0){
+		return -1;
+	}
 
+	std::cout<<"INF: preliminary ray intersection test succedded : "<<intersectionCount<<" times ..."<<std::endl;
+	std::cout<<"INF: performing test result validation ...."<<std::endl;
+	// test result validation
+	for(int i=0;i<hitDomainEdges.size();i++)
+	{
+		std::cout<<"INF: domain edge : " <<i<<" | hit status flag set to : "<<hitDomainEdges.at(i)<<" ..."<<std::endl;
+	}
+	if(hitDomainEdges.at(0) == true && hitDomainEdges.at(hitDomainEdges.size()-1) == true){
+		intersectionCount -= 1;
+	}//further more
+	for(int i=1;i<hitDomainEdges.size();i++)
+	{
+		if(hitDomainEdges.at(i-1) == true && hitDomainEdges.at(i) == true) {
+			std::cout<<"hit "<<i<<std::endl;
+			intersectionCount -= 1;
+		}
+	}
+	std::cout<<"--------------------------------------------------------"<<std::endl;
+	std::cout<<"INF: test result validation completed ...."<<std::endl;
+	std::cout<<"INF: validated ray intersection count is : "<<intersectionCount<<" times ..."<<std::endl;
+	std::cout<<"--------------------------------------------------------"<<std::endl;
+	return intersectionCount;
 }
+
 
 void Node::registerToResMan()
 {

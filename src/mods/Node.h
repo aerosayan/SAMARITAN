@@ -76,10 +76,13 @@ public:
 	// subdivide the node to create 4 children
 	void subdivide();
 
+
+	// run all intersection tests
+	// _geometry is the list of the geometry for which the test is to be run
+	bool runIntersectionTests(std::vector<Point*>& _geometry);
+
 	// run an intersection test in 2d for the bounding boxes and geometry edges
-	bool rayBoxIntersectionTest2D(std::vector<Point*>& _geometry);
-
-
+	int rayBoxIntersectionTest2D(std::vector<Point*>& _geometry,int _s1,int _s2,double _xtol,double _ytol);
 private:
 	//----------------------------------------------
 	// Set methods
@@ -91,6 +94,9 @@ private:
 	//----------------------------------------------
 	// register to resource manager
 	void registerToResMan();
+	//----------------------------------------------
+	// mesh generation,ray intersection et.al methods
+	//----------------------------------------------
 
 	//----------------------------------------------
 	// Data members
