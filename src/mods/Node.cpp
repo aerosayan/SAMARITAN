@@ -101,18 +101,27 @@ void Node::subdivide()
 
 bool Node::runIntersectionTests(std::vector<Point*>& _geometry)
 {
+	int result = -1;
 	std::cout<<"INF: running intersection test 1 of 3 ..."<<std::endl;
 	if(rayBoxIntersectionTest2D(_geometry, 1,1,1e-3,1e-3) >= 1){
 		return true;
 	}
 	std::cout<<"INF: running intersection test 2 of 3 ..."<<std::endl;
-	if((rayBoxIntersectionTest2D(_geometry,1,101,1e-3,1e-3) % 2) == 0 ){
+	result = rayBoxIntersectionTest2D(_geometry,1,101,1e-3,1e-3);
+	std::cout<<"result : "<<result<<std::endl;
+	if(result >=1 && (result % 2) != 0){
+		std::cout<<"test1"<<std::endl;
 		return true;
 	}
 	std::cout<<"INF: running intersection test 3 of 3 ..."<<std::endl;
-	if((rayBoxIntersectionTest2D(_geometry,101,1,1e-3,1e-3) % 2) == 0 ){
+	result = -1; // resetting variable to prevent perevious result creeping in
+	result = rayBoxIntersectionTest2D(_geometry,101,1,1e-3,1e-3);
+	std::cout<<"result : "<<result<<std::endl;
+	if(result >=1 && (result % 2) != 0){
+		std::cout<<"test2"<<std::endl;
 		return true;
 	}
+	// if all else fails then no intersection has occured
 	std::cout<<"INF:  intersection test 3 of 3 have failed ..."<<std::endl;
 	return false;
 }
@@ -155,6 +164,7 @@ int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _geometry, int _s1,int _
 		// considering x1 is of left point and x2 is of right point
 		// TODO : it is not correct . correct it
 		std::cout<<"INF: vector scaling requested is ..."<<std::endl;
+		std::cout<<"------------------------------------"<<std::endl;
 		std::cout<<"s1 : "<<_s1<<" | s2 : "<<_s2<<std::endl;
 		std::cout<<"xtol : "<<_xtol<<" | ytol : "<<_ytol<<std::endl;
 
@@ -226,6 +236,7 @@ int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _geometry, int _s1,int _
 					}
 				}
 			}
+			std::cout<<"INF: vector scaling operation has been completed ..."<<std::endl;
 		}else{
 			std::cerr<<"ERR: we have an error unexpected scaling factors are given ...."<<std::endl;
 			std::cerr<<"s1 : "<<_s1<<" | s2 : "<<_s2<<std::endl;
@@ -282,7 +293,7 @@ int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _geometry, int _s1,int _
 	// test result validation
 	for(int i=0;i<hitDomainEdges.size();i++)
 	{
-		std::cout<<"INF: domain edge : " <<i<<" | hit status flag set to : "<<hitDomainEdges.at(i)<<" ..."<<std::endl;
+		std::cout<<"INF: domain edge : " <<i+1<<" | hit status flag set to : "<<hitDomainEdges.at(i)<<" ..."<<std::endl;
 	}
 	if(hitDomainEdges.at(0) == true && hitDomainEdges.at(hitDomainEdges.size()-1) == true){
 		intersectionCount -= 1;
@@ -290,7 +301,6 @@ int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _geometry, int _s1,int _
 	for(int i=1;i<hitDomainEdges.size();i++)
 	{
 		if(hitDomainEdges.at(i-1) == true && hitDomainEdges.at(i) == true) {
-			std::cout<<"hit "<<i<<std::endl;
 			intersectionCount -= 1;
 		}
 	}
@@ -311,7 +321,6 @@ void Node::registerToResMan()
 		std::cout<<" | parent id : root "<<std::endl;
 	}
 	else{
-
 		std::cout<<" | parent id : "<<getParent()->getSiblingId()<<std::endl;
 	}
 

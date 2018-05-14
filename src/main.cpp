@@ -7,18 +7,22 @@
 
 int main(int argc,char **argv)
 {
+	// resource manager
 	std::vector<Node*> resMan;
+	// creating the root node
 	Node* n = new Node(0,resMan);
-	Node* t;
-	n->subdivide();
+	//n->subdivide();
 
-	std::cout<<resMan.size()<<std::endl;
-
+	// creating a test geometry [a line for now]
 	std::vector<Point*> geom;
 	geom.push_back(new Point(0.5f,0.5f));
 	geom.push_back(new Point(1.0f,1.0f));
 
-	n->runIntersectionTests(geom);
+	// run intersection tests and if true then subdivide
+	if(n->runIntersectionTests(geom) == true)
+	{
+		n->subdivide();
+	}
 
 
 
