@@ -76,6 +76,37 @@ void Node::setBoundingBox()
 	m_boundingBox.push_back(m_boundingBox.at(0));
 }
 
+void Node::genGeomLOD(std::vector<std::vector<Point*> >& _geometries )
+{
+	std::vector<Point*> edge;
+	std::vector<Point*> cuttingEdges;
+	for (int i=0;i<_geometries.size();i++)
+	{
+		cuttingEdges.clear();
+		// TODO : make sure there are no errors here
+		for(int j=0;j<_geometries.at(i).size()-1;j=j+2)
+		{
+			edge.clear();
+			edge.push_back(_geometries.at(i).at(j));
+			edge.push_back(_geometries.at(i).at(j+1));
+			if(runIntersectionTests(edge) == true)
+			{
+				cuttingEdges.push_back(edge.at(0));
+				cuttingEdges.push_back(edge.at(1));
+			}
+		}
+		getGeomLOD().push_back(cuttingEdges);
+	}
+	// now the geom lod cache will be non zero if any edge has cut it
+	if(getGeomLOD().size() > 0){
+		// we have atleast one edge which cuts the geometry and hence we need
+		// // to subdivide
+		subdivide();
+	}
+
+
+
+}
 void Node::subdivide()
 {
 	double x = getPos()->getX();
@@ -99,23 +130,28 @@ void Node::subdivide()
 }
 
 
-bool Node::runIntersectionTests(std::vector<Point*>& _geometry)
+bool Node::runIntersectionTests(std::vector<Point*>& _edge)
 {
 	int result = -1;
+	std::cout<<"-----------------------------------------\n";
+	std::cout<<"INF: intersection test called for ...\n";
+	std::cout<<"p1 : ("<<_edge.at(0)->getX()<<","<<_edge.at(0)->getY()<<")\n";
+	std::cout<<"p2 : ("<<_edge.at(1)->getX()<<","<<_edge.at(1)->getY()<<")\n";
+	std::cout<<"-----------------------------------------\n";
+
 	std::cout<<"INF: running intersection test 1 of 3 ..."<<std::endl;
-	if(rayBoxIntersectionTest2D(_geometry, 1,1,1e-3,1e-3) >= 1){
+	if(rayBoxIntersectionTest2D(_edge, 1,1,1e-3,1e-3) >= 1){
 		return true;
 	}
 	std::cout<<"INF: running intersection test 2 of 3 ..."<<std::endl;
-	result = rayBoxIntersectionTest2D(_geometry,1,101,1e-3,1e-3);
+	result = rayBoxIntersectionTest2D(_edge,1,101,1e-3,1e-3);
 	std::cout<<"result : "<<result<<std::endl;
 	if(result >=1 && (result % 2) != 0){
-		std::cout<<"test1"<<std::endl;
 		return true;
 	}
 	std::cout<<"INF: running intersection test 3 of 3 ..."<<std::endl;
 	result = -1; // resetting variable to prevent perevious result creeping in
-	result = rayBoxIntersectionTest2D(_geometry,101,1,1e-3,1e-3);
+	result = rayBoxIntersectionTest2D(_edge,101,1,1e-3,1e-3);
 	std::cout<<"result : "<<result<<std::endl;
 	if(result >=1 && (result % 2) != 0){
 		std::cout<<"test2"<<std::endl;
@@ -126,7 +162,8 @@ bool Node::runIntersectionTests(std::vector<Point*>& _geometry)
 	return false;
 }
 
-int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _geometry, int _s1,int _s2,double _xtol,double _ytol)
+int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _edge,
+	 int _s1,int _s2,double _xtol,double _ytol)
 {
 	// Point placeholders
 	Point *p1,*p2,*p3,*p4;
@@ -146,12 +183,18 @@ int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _geometry, int _s1,int _
 	// hit domain edges flags
 	std::vector<bool> hitDomainEdges(getBoundingBox().size()-1,false);
 
-	// run loop to go over all the defined geometry edges
-	for (int i = 0;i<_geometry.size()-1;i++)
+	// if edge vector size is not equal to 2 then it is not an edge
+	if(_edge.size() != 2){
+		std::cerr<<"ERR: the edge c++ vector length must be equal to 2 ....\n";
+		std::cerr<<"edge c++ vector length : "<<_edge.size()<<std::endl;
+		// TODO : give a runtime error
+	}
+	// run loop to go over the given two points
+	for (int i = 0;i<_edge.size()-1; i++)
 	{
 		// select the geometry edge points
-		p1 = _geometry.at(i);
-		p2 = _geometry.at(i+1);
+		p1 = _edge.at(i);
+		p2 = _edge.at(i+1);
 		x1 = p1->getX(); y1 = p1->getY();
 		x2 = p2->getX(); y2 = p2->getY();
 
@@ -280,7 +323,7 @@ int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _geometry, int _s1,int _
 				intersectionCount += 1;
 			}
 			else{
-				std::cout<<"INF: ray intersection tes has failed ..."<<std::endl;
+				std::cout<<"INF: ray intersection test has failed ..."<<std::endl;
 			}
 		}
 	}

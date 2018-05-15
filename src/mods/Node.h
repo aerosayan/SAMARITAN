@@ -50,6 +50,9 @@ public:
 	// get bounding box
 	std::vector<Point*>& getBoundingBox(){return m_boundingBox;}
 
+	// get geometry level of detail
+	std::vector<std::vector<Point*> >& getGeomLOD(){return m_geomLOD;}
+
 	//----------------------------------------------
 	// Set methods
 	//----------------------------------------------
@@ -73,12 +76,15 @@ public:
 	// mesh generation,ray intersection et.al methods
 	//----------------------------------------------
 
+	// run geometry LOD generator on multiple geometries
+	void genGeomLOD(std::vector<std::vector<Point*> >& _geometries );
+
 	// subdivide the node to create 4 children
 	void subdivide();
 
 	// run all intersection tests
-	// _geometry is the list of the geometry for which the test is to be run
-	bool runIntersectionTests(std::vector<Point*>& _geometry);
+	// _edge is the edges fed in one by one to run intersection tests on
+	bool runIntersectionTests(std::vector<Point*>& _edge);
 
 private:
 	//----------------------------------------------
@@ -95,7 +101,7 @@ private:
 	// mesh generation,ray intersection et.al methods
 	//----------------------------------------------
 	// run an intersection test in 2d for the bounding boxes and geometry edges
-	int rayBoxIntersectionTest2D(std::vector<Point*>& _geometry,int _s1,int _s2,double _xtol,double _ytol);
+	int rayBoxIntersectionTest2D(std::vector<Point*>& ,int ,int ,double ,double );
 
 	//----------------------------------------------
 	// Data members
@@ -129,6 +135,10 @@ private:
 	Point* m_pos;
 	// node bounding box
 	std::vector<Point*> m_boundingBox;
+
+	// geometry level of detail
+	// // each of the seperate vectors will store LOD for different geometries
+	std::vector<std::vector<Point*> > m_geomLOD;
 
 	// boudning box length and width
 	double m_boxLength;

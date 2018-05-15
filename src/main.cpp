@@ -17,16 +17,14 @@ int main(int argc,char **argv)
 	std::vector<Point*> geom;
 	geom.push_back(new Point(0.5f,0.5f));
 	geom.push_back(new Point(1.0f,1.0f));
+	geom.push_back(new Point(1.0f,1.0f));
+	geom.push_back(new Point(1.0f,0.0f));
 
-	// run intersection tests and if true then subdivide
-	if(n->runIntersectionTests(geom) == true)
-	{
-		n->subdivide();
-	}
+	std::vector<std::vector<Point*> > geometries;
+	geometries.push_back(geom);
+	geometries.push_back(geom);
 
-
-
-
+	n->genGeomLOD(geometries);
 
 
 
