@@ -15,6 +15,7 @@ public:
 	virtual ~Manager(){};
 	void registerNodes(Node* _node);
 	void setMaxGeomLOD(unsigned int _maxLOD);
+	std::vector<Node*>& getNodeVec(){return m_nodes;}
 private:
 	// maximum level of detail or mesh level to be stored in the geom cache
 	unsigned int m_maxGeomCacheLOD;

@@ -17,11 +17,11 @@ class Mesher
 {
 public:
 	Mesher(Manager* _resMan):m_resMan(_resMan){}
-	virtual ~Mehser(){}
+	virtual ~Mesher(){}
 
 	Manager* getResoruceManager(){return m_resMan;}
 
-	void generateMesh(std::vector<Point*>& _geom);
+	void generateMesh(std::vector<std::vector<Point*> >& _geom);
 private:
 	Manager* m_resMan;
 };

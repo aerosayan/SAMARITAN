@@ -80,27 +80,45 @@ void Node::genGeomLOD(std::vector<std::vector<Point*> >& _geometries )
 {
 	std::vector<Point*> edge;
 	std::vector<Point*> cuttingEdges;
-	for (int i=0;i<_geometries.size();i++)
+	std::vector<std::vector<Point*> > workingGeometry;
+	// if root node then set working geometry to the input geometry
+	if(getSiblingId() == 0) {
+		workingGeometry = _geometries;
+	}else{ // set to the LOD stored in the parent
+		workingGeometry = getParent()->getGeomLOD();
+	}
+	// start the work
+	for (int i=0;i<workingGeometry.size();i++)
 	{
 		cuttingEdges.clear();
 		// TODO : make sure there are no errors here
-		for(int j=0;j<_geometries.at(i).size()-1;j=j+2)
+		for(int j=0;j<workingGeometry.at(i).size()-1;j=j+2)
 		{
 			edge.clear();
-			edge.push_back(_geometries.at(i).at(j));
-			edge.push_back(_geometries.at(i).at(j+1));
+			edge.push_back(workingGeometry.at(i).at(j));
+			edge.push_back(workingGeometry.at(i).at(j+1));
 			if(runIntersectionTests(edge) == true)
 			{
 				cuttingEdges.push_back(edge.at(0));
 				cuttingEdges.push_back(edge.at(1));
 			}
 		}
-		getGeomLOD().push_back(cuttingEdges);
+		if(cuttingEdges.size() != 0){
+			getGeomLOD().push_back(cuttingEdges);
+			std::cout<<"INF: cutting edge size : "<<cuttingEdges.size()<<std::endl;
+			std::cout<<"INF: geom lod cache size : "<<getGeomLOD().size()<<std::endl;
+		}else
+		{
+			std::cout<<"INF: cutting edge size is found to be zero ...\n";
+			std::cout<<"INF: can not create geometry lod cache ..."<<std::endl;
+		}
+
 	}
 	// now the geom lod cache will be non zero if any edge has cut it
 	if(getGeomLOD().size() > 0){
 		// we have atleast one edge which cuts the geometry and hence we need
 		// // to subdivide
+		setIsCut();
 		subdivide();
 	}
 
@@ -154,7 +172,6 @@ bool Node::runIntersectionTests(std::vector<Point*>& _edge)
 	result = rayBoxIntersectionTest2D(_edge,101,1,1e-3,1e-3);
 	std::cout<<"result : "<<result<<std::endl;
 	if(result >=1 && (result % 2) != 0){
-		std::cout<<"test2"<<std::endl;
 		return true;
 	}
 	// if all else fails then no intersection has occured
