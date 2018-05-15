@@ -9,7 +9,7 @@
 void Mesher::generateMesh(std::vector<std::vector<Point*> >& _geom)
 {
 	Node* root = new Node(0,getResoruceManager()->getNodeVec());
-	unsigned int maxMeshLevel = 3;
+	unsigned int maxMeshLevel = 6;
 	// used to traverse the mesh node vector to go through all the children
 	unsigned int currentMeshLevelStart = 0;
 	unsigned int currentMeshLevelEnd = 0;

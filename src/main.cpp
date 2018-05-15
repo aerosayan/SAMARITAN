@@ -5,6 +5,8 @@
 #include "mods/Point.h"
 #include "mods/Manager.h"
 #include "mods/Mesher.h"
+#include <fstream>
+#include <iomanip>
 
 int main(int argc,char **argv)
 {
@@ -22,6 +24,27 @@ int main(int argc,char **argv)
 	mesher->generateMesh(geometries);
 
 
+
+
+
+
+
+
+
+
+	std::ofstream meshFile;
+	meshFile.open("mesh.dat");
+
+	Node * n = nullptr;
+	for(int i =0;i<manager->getNodeVec().size();i++)
+	{
+		std::cout<<"INF: creating mesh file ... "<<std::endl;
+		n = manager->getNodeVec().at(i);
+		meshFile <<std::fixed<<std::setprecision(6)<<std::endl;
+		meshFile << n->getPos()->getX() <<"\t"<<n->getPos()->getY()<<"\t"
+		<< n->getBoxHeight() <<"\t" <<n->getBoxLength()<<"\n";
+	}
+	meshFile.close();
 
 
 
