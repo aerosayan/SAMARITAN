@@ -105,14 +105,16 @@ void Node::genGeomLOD(std::vector<std::vector<Point*> >& _geometries )
 		}
 		if(cuttingEdges.size() != 0){
 			getGeomLOD().push_back(cuttingEdges);
-			std::cout<<"INF: cutting edge size : "<<cuttingEdges.size()<<std::endl;
-			std::cout<<"INF: geom lod cache size : "<<getGeomLOD().size()<<std::endl;
+			if(m_isDebugging){
+				std::cout<<"INF: cutting edge size : "<<cuttingEdges.size()<<std::endl;
+				std::cout<<"INF: geom lod cache size : "<<getGeomLOD().size()<<std::endl;
+			}
 		}else
 		{
 			if(m_isDebugging){
 				std::cout<<"INF: cutting edge size is found to be zero ...\n";
 				std::cout<<"INF: can not create geometry lod cache ..."<<std::endl;
-			}	
+			}
 		}
 
 	}
@@ -399,14 +401,20 @@ int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _edge,
 
 void Node::registerToResMan()
 {
-	std::cout<<"INF: registering node : mesh level : "<<getMeshLevel()
-	<<" | sibling id : "<<getSiblingId();
+	if(m_isDebugging){
+		std::cout<<"INF: registering node : mesh level : "<<getMeshLevel()
+		<<" | sibling id : "<<getSiblingId();
+	}
 
 	if(getMeshLevel() == 0){
-		std::cout<<" | parent id : root "<<std::endl;
+		if(m_isDebugging){
+			std::cout<<" | parent id : root "<<std::endl;
+		}
 	}
 	else{
-		std::cout<<" | parent id : "<<getParent()->getSiblingId()<<std::endl;
+		if(m_isDebugging){
+			std::cout<<" | parent id : "<<getParent()->getSiblingId()<<std::endl;
+		}
 	}
 
 	m_resMan.push_back(this);

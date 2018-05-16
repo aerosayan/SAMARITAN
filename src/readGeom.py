@@ -10,12 +10,12 @@ y = geom[:,1]
 print(x)
 print(y)
 
-plt.plot(x,y,'ro-');
-plt.title("NACA 2412");plt.grid()
-plt.xlim([0,1]);plt.ylim([-0.5,0.5])
-plt.show()
-
 x = x+0.5
 y = y+0.5
+plt.plot(x,y,'ro-');
+plt.title("NACA 2412");plt.grid()
+plt.xlim([0,2]);plt.ylim([0,1])
+plt.show()
 
-np.savetxt("../geoms/mod_naca2412.dat",np.c_[x,y],fmt="%1.6e")
+
+#np.savetxt("../geoms/mod_naca2412.dat",np.c_[x,y],fmt="%1.6e")
