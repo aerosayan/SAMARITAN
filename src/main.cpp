@@ -11,17 +11,20 @@
 int main(int argc,char **argv)
 {
 	Manager* manager = new Manager();
+	manager->readInGeometry("../geoms/mod_naca2412.dat");
+
 	Mesher* mesher = new Mesher(manager);
 
-	// creating a test geometry [a line for now]
+	/* creating a test geometry [a line for now]
 	std::vector<Point*> geom;
 	geom.push_back(new Point(0.1f,0.1f));
 	geom.push_back(new Point(0.5f,0.2f));
 	std::vector<std::vector<Point*> > geometries;
 	geometries.push_back(geom);
 	geometries.push_back(geom);
+	*/
 
-	mesher->generateMesh(geometries);
+	mesher->generateMesh(manager->getGeometries());
 
 
 

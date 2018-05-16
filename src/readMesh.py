@@ -18,6 +18,6 @@ y3 = y2
 x4 = x3
 y4 = y1
 
-plt.plot([x1,x2,x3,x4,x1],[y1,y2,y3,y4,y1],'ro-');
+plt.plot([x1,x2,x3,x4,x1],[y1,y2,y3,y4,y1],'ro-',markerSize=2);
 plt.title("mesh");plt.grid()
 plt.show()

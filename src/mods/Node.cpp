@@ -5,8 +5,8 @@
 #include <cmath>
 
 Node::Node(int _siblingId,std::vector<Node*>& _resMan):
-m_siblingId(_siblingId),m_meshLevel(0),m_resMan(_resMan),m_boxLength(10.0f),
-m_boxHeight(7.0f)
+m_siblingId(_siblingId),m_meshLevel(0),m_resMan(_resMan),m_boxLength(2.0f),
+m_boxHeight(1.0f)
 {
 		if(getSiblingId() == 0) {
 			std::cout<<"INF: registering QuadTree root ..."<<std::endl;
@@ -109,8 +109,10 @@ void Node::genGeomLOD(std::vector<std::vector<Point*> >& _geometries )
 			std::cout<<"INF: geom lod cache size : "<<getGeomLOD().size()<<std::endl;
 		}else
 		{
-			std::cout<<"INF: cutting edge size is found to be zero ...\n";
-			std::cout<<"INF: can not create geometry lod cache ..."<<std::endl;
+			if(m_isDebugging){
+				std::cout<<"INF: cutting edge size is found to be zero ...\n";
+				std::cout<<"INF: can not create geometry lod cache ..."<<std::endl;
+			}	
 		}
 
 	}
@@ -150,32 +152,36 @@ void Node::subdivide()
 
 bool Node::runIntersectionTests(std::vector<Point*>& _edge)
 {
-	int result = -1;
-	std::cout<<"-----------------------------------------\n";
-	std::cout<<"INF: intersection test called for ...\n";
-	std::cout<<"p1 : ("<<_edge.at(0)->getX()<<","<<_edge.at(0)->getY()<<")\n";
-	std::cout<<"p2 : ("<<_edge.at(1)->getX()<<","<<_edge.at(1)->getY()<<")\n";
-	std::cout<<"-----------------------------------------\n";
-
-	std::cout<<"INF: running intersection test 1 of 3 ..."<<std::endl;
+	int testResult2 = -1;
+	int testResult3 = -1;
+	if(m_isDebugging){
+		std::cout<<"-----------------------------------------\n";
+		std::cout<<"INF: intersection test called for ...\n";
+		std::cout<<"p1 : ("<<_edge.at(0)->getX()<<","<<_edge.at(0)->getY()<<")\n";
+		std::cout<<"p2 : ("<<_edge.at(1)->getX()<<","<<_edge.at(1)->getY()<<")\n";
+		std::cout<<"-----------------------------------------\n";
+	}
+	if(m_isDebugging){
+		std::cout<<"INF: running intersection test 1 of 3 ..."<<std::endl;
+	}
 	if(rayBoxIntersectionTest2D(_edge, 1,1,1e-3,1e-3) >= 1){
 		return true;
 	}
-	std::cout<<"INF: running intersection test 2 of 3 ..."<<std::endl;
-	result = rayBoxIntersectionTest2D(_edge,1,101,1e-3,1e-3);
-	std::cout<<"result : "<<result<<std::endl;
-	if(result >=1 && (result % 2) != 0){
-		return true;
+	if(m_isDebugging){
+		std::cout<<"INF: running intersection test 2 of 3 ..."<<std::endl;
 	}
-	std::cout<<"INF: running intersection test 3 of 3 ..."<<std::endl;
-	result = -1; // resetting variable to prevent perevious result creeping in
-	result = rayBoxIntersectionTest2D(_edge,101,1,1e-3,1e-3);
-	std::cout<<"result : "<<result<<std::endl;
-	if(result >=1 && (result % 2) != 0){
+	testResult2 = rayBoxIntersectionTest2D(_edge,1,101,1e-3,1e-3);
+	if(m_isDebugging){
+		std::cout<<"INF: running intersection test 3 of 3 ..."<<std::endl;
+	}
+	testResult3 = rayBoxIntersectionTest2D(_edge,101,1,1e-3,1e-3);
+	if(testResult2 >0 && testResult3 >0 ){
 		return true;
 	}
 	// if all else fails then no intersection has occured
-	std::cout<<"INF:  intersection test 3 of 3 have failed ..."<<std::endl;
+	if(m_isDebugging){
+		std::cout<<"INF:  intersection test 3 of 3 have failed ..."<<std::endl;
+	}
 	return false;
 }
 
@@ -223,10 +229,13 @@ int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _edge,
 		// // So is there something that can be done for this?
 		// considering x1 is of left point and x2 is of right point
 		// TODO : it is not correct . correct it
-		std::cout<<"INF: vector scaling requested is ..."<<std::endl;
-		std::cout<<"------------------------------------"<<std::endl;
-		std::cout<<"s1 : "<<_s1<<" | s2 : "<<_s2<<std::endl;
-		std::cout<<"xtol : "<<_xtol<<" | ytol : "<<_ytol<<std::endl;
+		if(m_isDebugging)
+		{
+			std::cout<<"INF: vector scaling requested is ..."<<std::endl;
+			std::cout<<"------------------------------------"<<std::endl;
+			std::cout<<"s1 : "<<_s1<<" | s2 : "<<_s2<<std::endl;
+			std::cout<<"xtol : "<<_xtol<<" | ytol : "<<_ytol<<std::endl;
+		}
 
 		if(_s1 == 1 && _s2 == 1 ){
 			// do nothing
@@ -296,7 +305,9 @@ int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _edge,
 					}
 				}
 			}
-			std::cout<<"INF: vector scaling operation has been completed ..."<<std::endl;
+			if(m_isDebugging){
+				std::cout<<"INF: vector scaling operation has been completed ..."<<std::endl;
+			}
 		}else{
 			std::cerr<<"ERR: we have an error unexpected scaling factors are given ...."<<std::endl;
 			std::cerr<<"s1 : "<<_s1<<" | s2 : "<<_s2<<std::endl;
@@ -313,11 +324,13 @@ int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _edge,
 			x3 = p3->getX(); y3 = p3->getY();
 			x4 = p4->getX(); y4 = p4->getY();
 
-			std::cout<<"-----------------------------"<<std::endl;
-			std::cout<<"p1.x : "<<x1<<"\t| p1.y : "<<y1<<std::endl;
-			std::cout<<"p2.x : "<<x2<<"\t| p2.y : "<<y2<<std::endl;
-			std::cout<<"p3.x : "<<x3<<"\t| p3.y : "<<y3<<std::endl;
-			std::cout<<"p4.x : "<<x4<<"\t| p4.y : "<<y4<<std::endl;
+			if(m_isDebugging){
+				std::cout<<"-----------------------------"<<std::endl;
+				std::cout<<"p1.x : "<<x1<<"\t| p1.y : "<<y1<<std::endl;
+				std::cout<<"p2.x : "<<x2<<"\t| p2.y : "<<y2<<std::endl;
+				std::cout<<"p3.x : "<<x3<<"\t| p3.y : "<<y3<<std::endl;
+				std::cout<<"p4.x : "<<x4<<"\t| p4.y : "<<y4<<std::endl;
+			}
 			sx = x4 - x3;
 			sy = y4 - y3;
 			// calculate r*s cross product
@@ -326,21 +339,28 @@ int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _edge,
 			u = (float)((x3-x1)*ry - (y3-y1)*rx)/(float)rs;
 			t = (float)((x3-x1)*sy - (y3-y1)*sx)/(float)rs;
 
-			std::cout<<"u : "<<u<<"\t\t| t : "<<t<<std::endl;
+			if(m_isDebugging){
+				std::cout<<"u : "<<u<<"\t\t| t : "<<t<<std::endl;
+			}
+
 			//std::cout<<"rs : "<<rs<<" | rx : "<<rx<<" | ry : "<<ry<<std::endl;
 			//std::cout<<"sx : "<<sx<<" | sy : "<<sy<<std::endl;
 
 			// intercept test
 			if(u>=0 && u<=1 && t>=0 && t<=1){
-				std::cout<<"-------------------------------\n";
-				std::cout<<"INF: ray intersection test has succedded\n";
-				std::cout<<"-------------------------------"<<std::endl;
+				if(m_isDebugging){
+					std::cout<<"-------------------------------\n";
+					std::cout<<"INF: ray intersection test has succedded\n";
+					std::cout<<"-------------------------------"<<std::endl;
+				}
 				// mark in hit domian edges flag vector
 				hitDomainEdges.at(j) = true;
 				intersectionCount += 1;
 			}
 			else{
+				if(m_isDebugging){
 				std::cout<<"INF: ray intersection test has failed ..."<<std::endl;
+				}
 			}
 		}
 	}
@@ -348,13 +368,16 @@ int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _edge,
 		return -1;
 	}
 
-	std::cout<<"INF: preliminary ray intersection test succedded : "<<intersectionCount<<" times ..."<<std::endl;
-	std::cout<<"INF: performing test result validation ...."<<std::endl;
-	// test result validation
-	for(int i=0;i<hitDomainEdges.size();i++)
-	{
-		std::cout<<"INF: domain edge : " <<i+1<<" | hit status flag set to : "<<hitDomainEdges.at(i)<<" ..."<<std::endl;
+	if(m_isDebugging){
+		std::cout<<"INF: preliminary ray intersection test succedded : "<<intersectionCount<<" times ..."<<std::endl;
+		std::cout<<"INF: performing test result validation ...."<<std::endl;
+		// test result validation
+		for(int i=0;i<hitDomainEdges.size();i++)
+		{
+			std::cout<<"INF: domain edge : " <<i+1<<" | hit status flag set to : "<<hitDomainEdges.at(i)<<" ..."<<std::endl;
+		}
 	}
+
 	if(hitDomainEdges.at(0) == true && hitDomainEdges.at(hitDomainEdges.size()-1) == true){
 		intersectionCount -= 1;
 	}//further more
@@ -364,10 +387,12 @@ int Node::rayBoxIntersectionTest2D(std::vector<Point*>& _edge,
 			intersectionCount -= 1;
 		}
 	}
-	std::cout<<"--------------------------------------------------------"<<std::endl;
-	std::cout<<"INF: test result validation completed ...."<<std::endl;
-	std::cout<<"INF: validated ray intersection count is : "<<intersectionCount<<" times ..."<<std::endl;
-	std::cout<<"--------------------------------------------------------"<<std::endl;
+	if(m_isDebugging){
+		std::cout<<"--------------------------------------------------------"<<std::endl;
+		std::cout<<"INF: test result validation completed ...."<<std::endl;
+		std::cout<<"INF: validated ray intersection count is : "<<intersectionCount<<" times ..."<<std::endl;
+		std::cout<<"--------------------------------------------------------"<<std::endl;
+	}
 	return intersectionCount;
 }
 

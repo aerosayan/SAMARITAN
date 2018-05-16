@@ -9,6 +9,7 @@ class Point;
 class Node : public Elem
 {
 public:
+	bool m_isDebugging = false;
 	//----------------------------------------------
 	// Constructor and Destructor methods
 	//----------------------------------------------

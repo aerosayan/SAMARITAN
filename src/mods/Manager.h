@@ -1,5 +1,6 @@
 #pragma once
-#include<vector>
+#include <vector>
+#include <string>
 // FILE : Manager.h
 // INFO : manage all the different assets of the software including clearing
 //		memory used by pointers. Also, managing things like geometric cache
@@ -14,8 +15,11 @@ public:
 	Manager(){};
 	virtual ~Manager(){};
 	void registerNodes(Node* _node);
+	std::vector<std::vector<Point *> >& getGeometries(){return m_geom;}
 	void setMaxGeomLOD(unsigned int _maxLOD);
+
 	std::vector<Node*>& getNodeVec(){return m_nodes;}
+	void readInGeometry(std::string _filepath);
 private:
 	// maximum level of detail or mesh level to be stored in the geom cache
 	unsigned int m_maxGeomCacheLOD;
