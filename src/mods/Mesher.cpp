@@ -9,8 +9,8 @@
 void Mesher::generateMesh(std::vector<std::vector<Point*> >& _geom)
 {
 	Node* root = new Node(0,getResoruceManager()->getNodeVec());
-	unsigned int baseMeshLevel = 2;
-	unsigned int maxMeshLevel = 9;
+	unsigned int baseMeshLevel = 0;
+	unsigned int maxMeshLevel = 13;
 	// used to traverse the mesh node vector to go through all the children
 	unsigned int currentMeshLevelStart = 0;
 	unsigned int currentMeshLevelEnd = 0;
@@ -34,7 +34,7 @@ void Mesher::generateMesh(std::vector<std::vector<Point*> >& _geom)
 				//std::cout<<"INF: mesh level start : "<<currentMeshLevelStart<<std::endl;
 				//std::cout<<"INF: mesh level end : "<<currentMeshLevelEnd<<std::endl;
 				if(i<baseMeshLevel){
-					getResoruceManager()->getNodeVec().at(j)->subdivide();
+					//getResoruceManager()->getNodeVec().at(j)->subdivide();
 				}
 				getResoruceManager()->getNodeVec().at(j)->genGeomLOD(_geom);
 			}

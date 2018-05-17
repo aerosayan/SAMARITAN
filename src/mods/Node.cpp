@@ -172,11 +172,11 @@ bool Node::runIntersectionTests(std::vector<Point*>& _edge)
 	if(m_isDebugging){
 		std::cout<<"INF: running intersection test 2 of 3 ..."<<std::endl;
 	}
-	testResult2 = rayBoxIntersectionTest2D(_edge,1,101,1e-3,1e-3);
+	testResult2 = rayBoxIntersectionTest2D(_edge,1,10001,1e-3,1e-3);
 	if(m_isDebugging){
 		std::cout<<"INF: running intersection test 3 of 3 ..."<<std::endl;
 	}
-	testResult3 = rayBoxIntersectionTest2D(_edge,101,1,1e-3,1e-3);
+	testResult3 = rayBoxIntersectionTest2D(_edge,10001,1,1e-3,1e-3);
 	if(testResult2 >0 && testResult3 >0 ){
 		return true;
 	}

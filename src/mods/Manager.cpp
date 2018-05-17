@@ -8,27 +8,36 @@
 void Manager::readInGeometry(std::string _filepath)
 {
 	std::ifstream file;
-	std::vector<Point*> points;
+	// original points and modified points
+	std::vector<Point*> orgPoints,modPoints;
 
 	file.open(_filepath);
 
 	double x,y;
-	points.clear();
-	Point* p1,*p2;
+	orgPoints.clear();
+	modPoints.clear();
 	int i =0;
 	while(file)
 	{
 		file >>x>>y;
-		if(i==0){
-			points.push_back(new Point(x,y));
-		}else{
-			points.push_back(points.at(i-1));
-			points.push_back(new Point(x,y));
-		}
-
+		orgPoints.push_back(new Point(x,y));
 		i+=1;
 	}
-	m_geom.push_back(points);
+
+	//re order the stuff
 
 
+	for(int j=1;j<orgPoints.size();j++)
+	{
+		modPoints.push_back(orgPoints.at(j-1));
+		modPoints.push_back(orgPoints.at(j));
+	}
+	/*
+	for(int j=0;j<modPoints.size();j++)
+	{
+		std::cout<<"x : "<<modPoints.at(j)->getX()<<" | y : "<<modPoints.at(j)->getY()<<std::endl;
+	}
+	*/
+
+	m_geom.push_back(modPoints);
 }
