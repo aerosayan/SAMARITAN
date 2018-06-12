@@ -1,4 +1,6 @@
 *.o
+*.pyd
 .sconsign.dblite
 mesh.dat
 ../backup/*
+build/*

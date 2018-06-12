@@ -4,9 +4,12 @@
 #include<iostream>
 #include <cmath>
 
-Node::Node(int _siblingId,std::vector<Node*>& _resMan):
-m_siblingId(_siblingId),m_meshLevel(0),m_resMan(_resMan),m_boxLength(2.0f),
-m_boxHeight(1.0f)
+Node::Node(int _siblingId,
+			std::vector<Node*>& _resMan,
+			double _boxLength,
+			double _boxHeight): m_siblingId(_siblingId),
+			m_meshLevel(0),m_resMan(_resMan),m_boxLength(_boxLength),
+			m_boxHeight(_boxHeight)
 {
 		if(getSiblingId() == 0) {
 			std::cout<<"INF: registering QuadTree root ..."<<std::endl;
@@ -61,7 +64,6 @@ void Node::setChild4(Node* _child) { m_child4 = _child; }
 
 void Node::setBoundingBox()
 {
-	// ERROR
 	double x = getPos()->getX();
 	double y = getPos()->getY();
 

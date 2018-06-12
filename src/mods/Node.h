@@ -14,7 +14,10 @@ public:
 	// Constructor and Destructor methods
 	//----------------------------------------------
 	// Register the QuadTree root node with _siblingId = 0
-	Node(int _siblingId,std::vector<Node*>& _resMan);
+	Node(int _siblingId,
+			std::vector<Node*>& _resMan,
+			double _boxLength,
+		 	double _boxHeight);
 	// Register the subsequent childrens of the QuadTree root
 	Node(Node* _parent,int _siblingId,std::vector<Node*>& _resMan);
 

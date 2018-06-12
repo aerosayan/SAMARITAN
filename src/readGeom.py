@@ -11,7 +11,7 @@ print(x)
 print(y)
 
 x = (x+0.5)
-y = (y+0.5)
+y = (y+1.0)
 plt.plot(x,y,'ro-');
 plt.title("NACA 2412");plt.grid()
 plt.xlim([0,2]);plt.ylim([0,1])

@@ -1,4 +1,4 @@
 import os
-path = ['C:\\MinGW\\bin']
+path = ['C:\\msys64\\usr\\bin']
 env = Environment(tools=['mingw'], ENV = {'PATH' : path})
-env.Program(['main.cpp','mods/Node.cpp','mods/Manager.cpp','mods/Mesher.cpp'],LINKFLAGS=['-static-libstdc++'])
+env.Program(['main.cpp','mods/Node.cpp','mods/Manager.cpp','mods/Mesher.cpp'],LINKFLAGS=['-static'])
