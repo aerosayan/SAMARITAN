@@ -9,10 +9,10 @@ This is a block stuctured grid generator based on quad tree decomposition for Co
 
 ### FOLDER STRUCTURE :
 SAMARITAN
-+ |=> src : contains the source files
-+ ==|=> mods : contains the C++ backend
-+ |=> geoms : contains the mesh geometry
-+ |=> mesh-pictures : conatains mesh output pictures
++ src/ : contains the source files
++ src/mods/ : contains the C++ backend
++ geoms/ : contains the mesh geometry
++ mesh-pictures/ : conatains mesh output pictures
 
 ### TECHNOLOGY USED
 + C++ for high performance code
@@ -45,12 +45,12 @@ $ python visualizeMesh.py
 
 ### Meshing result for a NACA-2412 aerofoil
 Fig 1 : NACA 2412 mesh
-![NACA 2412 mesh](../mesh-pictures/01-01-mesh-original-zoom.png)
+![NACA 2412 mesh](mesh-pictures/01-01-mesh-original-zoom.png)
 
 Fig 2 : NACA 2412 mesh zoomed
-![NACA 2412 mesh zoomed](../mesh-pictures/01-02-mesh-zoomed-view.png)
+![NACA 2412 mesh zoomed](mesh-pictures/01-02-mesh-zoomed-view.png)
 
 Fig 3 : NACA 2412 trailing edge mesh zoomed
-![NACA 2412 trailing edge mesh zoomed ](../mesh-pictures/02-01-trailing-edge-mesh.png)
+![NACA 2412 trailing edge mesh zoomed ](mesh-pictures/02-01-trailing-edge-mesh.png)
 
 For more pictures see mesh-pictures folder.
