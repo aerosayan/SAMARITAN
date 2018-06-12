@@ -1,0 +1,2 @@
+Max Mesh level : 13
+Geometry : NACA 2412

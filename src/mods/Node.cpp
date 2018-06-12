@@ -11,6 +11,8 @@ Node::Node(int _siblingId,
 			m_meshLevel(0),m_resMan(_resMan),m_boxLength(_boxLength),
 			m_boxHeight(_boxHeight)
 {
+		m_isDebugging = false;
+		m_isCut = false;
 		if(getSiblingId() == 0) {
 			std::cout<<"INF: registering QuadTree root ..."<<std::endl;
 			// resgister to resource manager
@@ -43,6 +45,8 @@ m_parent(_parent),m_resMan(_resMan),m_siblingId(_siblingId)
 	}
 	//else
 	// TODO : Set a maximum mesh level restiction to prevent blow up
+	m_isDebugging = false;
+	m_isCut = false;
 	m_meshLevel = m_parent->getMeshLevel() + 1;
 	// register to resouce manager
 	registerToResMan();

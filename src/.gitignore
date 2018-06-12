@@ -1,6 +1,7 @@
 *.o
 *.pyd
+samaritan.c
 .sconsign.dblite
 mesh.dat
 ../backup/*
-build/*
+build

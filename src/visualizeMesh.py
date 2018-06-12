@@ -24,6 +24,6 @@ print(x1.size)
 
 plt.plot([x1,x1,x1+geom[:,3],x1+geom[:,3],x1],[y1,y1+geom[:,2],y1+geom[:,2],y1,y1],'ro-',markerSize=2);
 plt.title("mesh");plt.grid()
-#orgGeom = np.loadtxt("../geoms/mod_naca2412.dat",dtype=np.float64)
-#plt.plot(orgGeom[:,0],orgGeom[:,1],'bo-')
+orgGeom = np.loadtxt("../geoms/mod_naca2412.dat",dtype=np.float64)
+plt.plot(orgGeom[:,0],orgGeom[:,1],'bo-')
 plt.show()

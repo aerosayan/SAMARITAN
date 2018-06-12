@@ -9,7 +9,7 @@ class Point;
 class Node : public Elem
 {
 public:
-	bool m_isDebugging = false;
+	bool m_isDebugging ;
 	//----------------------------------------------
 	// Constructor and Destructor methods
 	//----------------------------------------------
@@ -117,23 +117,23 @@ private:
 	// // That is whether it is child 1,2,3 or 4.
 	// // If it is 0 then that particular node is the QuadTree root
 	// // If it is <0 then it is uninitialized
-	int m_siblingId = -1;
+	int m_siblingId ;
 
 	// The parent of this node
-	Node* m_parent = nullptr;
+	Node* m_parent ;
 
 	// The children of this node
 	// // Either they will be leaf nodes or parent nodes themeselves
-	Node* m_child1 = nullptr;
-	Node* m_child2 = nullptr;
-	Node* m_child3 = nullptr;
-	Node* m_child4 = nullptr;
+	Node* m_child1 ;
+	Node* m_child2 ;
+	Node* m_child3 ;
+	Node* m_child4 ;
 
 	// The cut status for the node
-	bool m_isCut = false;
+	bool m_isCut;
 
 	// mesh subdivision level
-	unsigned int m_meshLevel = -1;
+	unsigned int m_meshLevel;
 
 	// node child1 position
 	Point* m_pos;

@@ -1,5 +1,6 @@
 #include<iostream>
 #include<vector>
+#include "main.h"
 #include "mods/Elem.h"
 #include "mods/Node.h"
 #include "mods/Point.h"
@@ -21,7 +22,7 @@ mesher->generateMesh(manager->getGeometries());
 std::ofstream meshFile;
 meshFile.open("mesh.dat");
 
-Node * n = nullptr;
+Node * n;
 std::cout<<"INF: creating mesh file ... "<<std::endl;
 for(int i =0;i<manager->getNodeVec().size();i++)
 {
@@ -52,11 +53,11 @@ for(int i = manager->getNodeVec().size()-1;i>=0;i--)
 	}
 	// delete the pointers and make them free
 	delete manager->getNodeVec().at(i);
-	manager->getNodeVec().at(i) = nullptr;
 }
 
 manager->getNodeVec().clear();
 }
+
 int main(int argc,char **argv)
 {
 	runMeshGenerator(8,3);

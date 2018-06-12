@@ -11,7 +11,7 @@ void Manager::readInGeometry(std::string _filepath)
 	// original points and modified points
 	std::vector<Point*> orgPoints,modPoints;
 
-	file.open(_filepath);
+	file.open(_filepath.c_str());
 
 	double x,y;
 	orgPoints.clear();
