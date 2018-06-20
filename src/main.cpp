@@ -7,15 +7,29 @@
 #include "mods/Manager.h"
 #include "mods/Mesher.h"
 #include <fstream>
+#include <string>
 #include <iomanip>
 
-void runMeshGenerator(unsigned int _maxMeshLevel,unsigned int _baseMeshLevel)
+
+void addGeometry(char * _geomListFile)
 {
+	printf("%s%s\n","INF: adding geometry : ",_geomListFile);
+}
+
+void runMeshGenerator(unsigned int _maxMeshLevel,
+	unsigned int _baseMeshLevel,
+	char * _geomListFile)
+{
+
+// Create resource manager
 Manager* manager = new Manager();
-manager->readInGeometry("../geoms/mod_naca2412.dat");
 
+// Read in geometry list file
+manager->readInGeometryListFile(_geomListFile);
+
+// Create mesher
 Mesher* mesher = new Mesher(manager,_maxMeshLevel,_baseMeshLevel);
-
+// Generate mesh
 mesher->generateMesh(manager->getGeometries());
 
 // Output file
@@ -60,6 +74,6 @@ manager->getNodeVec().clear();
 
 int main(int argc,char **argv)
 {
-	runMeshGenerator(8,3);
+	runMeshGenerator(8,3,"NULL");
 	return 0;
 }

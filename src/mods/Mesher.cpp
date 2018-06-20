@@ -15,12 +15,13 @@ void Mesher::generateMesh(std::vector<std::vector<Point*> >& _geom)
 	// the level from which we would like to start cleaning of the mesh
 	unsigned int meshCleanStartLevel = 3;
 
-	// Traverse over the geomtry matrix to perform mesh creation
+	// Create the required mesh levels
 	for(int i=0;i<m_maxMeshLevel;i++)
 	{
 		// handle working on the root node specially
 		std::cout<<"INF: meshing level :"<<i<<" ..."<<std::endl;
 		if(i==0){
+			// NOTE : we pass the full _geom matrix and not row by row
 			root->genGeomLOD(_geom);
 			// set the starting iterations
 			currentMeshLevelStart  = 1;
@@ -38,6 +39,7 @@ void Mesher::generateMesh(std::vector<std::vector<Point*> >& _geom)
 				if(i<m_baseMeshLevel){
 					getResoruceManager()->getNodeVec().at(j)->subdivide();
 				}
+				// NOTE : we pass the full _geom matrix and not row by row
 				getResoruceManager()->getNodeVec().at(j)->genGeomLOD(_geom);
 			}
 			currentMeshLevelStart = currentMeshLevelEnd ;

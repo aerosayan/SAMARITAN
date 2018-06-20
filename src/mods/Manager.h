@@ -19,6 +19,7 @@ public:
 	void setMaxGeomLOD(unsigned int _maxLOD);
 
 	std::vector<Node*>& getNodeVec(){return m_nodes;}
+	void readInGeometryListFile(char* _geomListFile);
 	void readInGeometry(std::string _filepath);
 private:
 	// maximum level of detail or mesh level to be stored in the geom cache

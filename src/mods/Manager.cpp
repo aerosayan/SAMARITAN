@@ -5,6 +5,22 @@
 #include <fstream>
 #include <iostream>
 
+void Manager::readInGeometryListFile(char* _geomListFile)
+{
+	std::cout<<"INF: using geometry list file : "<<_geomListFile<<std::endl;
+	std::ifstream geomList(_geomListFile);
+	if(geomList.is_open())
+	{
+		std::string geom;
+		while(getline(geomList,geom))
+		{
+			std::cout<<"INF: reading in : "<<geom<<std::endl;
+			// Read in geometries
+			this->readInGeometry(geom);
+		}
+		geomList.close();
+	}
+}
 void Manager::readInGeometry(std::string _filepath)
 {
 	std::ifstream file;
