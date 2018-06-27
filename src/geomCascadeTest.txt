@@ -1,2 +1,1 @@
-../geoms/naca2412.dat.txt
 ../geoms/mod_naca2412.dat
