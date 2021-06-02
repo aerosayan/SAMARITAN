@@ -1,3 +1,7 @@
+# DISCLAIMER
+
+Some researchers have reached out to me, to use this tool for running CFD simulations. Unfortunately, this is just a basic tool, and doesn't produce a mesh suitable for CFD. I made this as an exercise, so kindly be aware of this. However, if you wanted to look into the code and see how the cell identification, intersection tests, root disection happens, feel free to do so.
+
 # SAMARITAN
 *A block structured grid generator based on quad tree decomposition.*
 ### Author : Sayan Bhattacharjee
